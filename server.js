@@ -127,10 +127,10 @@ app.post("/PaymentData", (req, res, next) => {
             req.end();
             // Send OTP with Email
             client.sendEmail({
-                "From": "faiz_student@sysborg.com",
+                "From": "info@tecstic.com",
                 "To": data.PaymentEmail,
-                "Subject": "Payment verify OTP",
-                "TextBody": `Here is verify Otp code: ${otp}`
+                "Subject": "Payment verification OTP",
+                "TextBody": `please note your payment verification OTP: ${otp}`
             })
             res.send(data)
         }).catch((err) => {
@@ -173,8 +173,8 @@ app.post("/ReciveOtpStep-2", (req, res, next) => {
                 client.sendEmail({
                     From: "faiz_student@sysborg.com",
                     To: otpData.PaymentEmail,
-                    Subject: "Thank for Payment is Recived",
-                    TextBody: `payment is successfully recorded in our system.`,
+                    Subject: "Thankyou for your Payment ",
+                    TextBody: `Dear Customer, \n \n your payment is received  successfully recorded in our system.`,
                 });
             })
             res.send(otpData)
@@ -196,7 +196,7 @@ app.post("/ReSendOTP", (req, res) => {
             // console.log(data);
             if (!err) {
                 client.sendEmail({
-                    "From": "faiz_student@sysborg.com",
+                    "From": "info@tecStik.com",
                     "To": data.PaymentEmail,
                     "Subject": "Resend Payment verify OTP",
                     "TextBody": `Here is verify Otp code: ${data.VerificationCode.toString()}`
