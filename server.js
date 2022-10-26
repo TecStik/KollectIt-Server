@@ -237,17 +237,11 @@ app.post('/conformationPayment', (req, res, next) => {
 
 app.get('/', (req, res, next) => {
     payment.find({}, (err, data) => {
-        if (!err) {
-
-            res.send({
-                Data: data,
-            });
-        }
-        else {
-            res.status(500).send("error");
-        }
+        (!err) ? res.send({ Data: data, }) : res.status(500).send("error")
     })
 })
+
+ 
 //API to check how many payment Exist
 app.post('/checkExist', (req, res, next) => {
     if (!req.body.filter) {
@@ -306,6 +300,8 @@ app.post('/filteredPayments', (req, res, next) => {
         })
     }
 })
+
+
 // collectionsby
 app.post('/collectionBy', (req, res, next) => {
 
