@@ -1,0 +1,37 @@
+objectId
+ClientId
+ClientName
+Amount
+
+
+
+   Mode of Payment
+
+   Cash      Cheque
+
+cash pa click coll funcation  User ki email get kra gae
+Or otp send kra gae User ki email pa
+
+                OR       
+
+User email pa sa Otp batai gae,  Rider ko or Rider enter kra gae
+Candition MAtch hu gai tu True Warna False     // Match User ID ya Oder ID
+
+         &&
+
+Cheque pa Click Kra Camera Upen hu gae or img get kra gae or submit pa click kra 
+gae or pr funcation coll hu gae img url add hu gae User ki email get kra gae
+Or otp send kra gae User ki email pa
+
+      OR      
+
+User email pa sa Otp batai gae, Rider ko or Rider enter kra gae
+Candition MAtch hu gai tu True Warna False     // Match User ID ya Oder ID
+
+
+
+ClientId: req.body.clientID,  // user.clientID 
+ClientName: req.body.clientName,  // user.clientName 
+email: req.body.clientEmail,  // user.clientEmail 
+Amount: req.body.clientAmount,  // user.clientAmount 
+                   
