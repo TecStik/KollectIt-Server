@@ -5,8 +5,12 @@ const {
   Transaction,
   clientdata,
 } = require("./dbase/modules");
-var nodemailer = require("nodemailer");
-var app = express.Router();
+let nodemailer = require("nodemailer");
+let app = express.Router();
+
+let http = require("http");
+let APIKey = "f51c3293f9caacc25126cfc70764ccfd";
+let sender = "8583";
 
 const transporter = nodemailer.createTransport({
   host: "mail.tecstik.com",
@@ -34,6 +38,37 @@ function emailSnd(doc) {
   });
 }
 
+function smsSnd(doc) {
+  let receiver = doc.employeeEmail;
+  let textmessage = `Your account has been craeted: ${doc.employeeName}`;
+  let options = {
+    host: "api.veevotech.com",
+    path:
+      "/sendsms?hash=" +
+      APIKey +
+      "&receivenum=" +
+      receiver +
+      "&sendernum=" +
+      encodeURIComponent(sender) +
+      "&textmessage=" +
+      encodeURIComponent(textmessage),
+    method: "GET",
+    setTimeout: 30000,
+  };
+  let req = http.request(options, (res) => {
+    res.setEncoding("utf8");
+    res.on("data", (chunk) => {
+      console.log(chunk.toString());
+    });
+    console.log("STATUS: " + res.statusCode);
+  });
+  req.on("error", function (e) {
+    console.log("problem with request: " + e.message);
+  });
+  console.log(options, "options");
+  console.log(receiver, "receiver");
+  req.end();
+}
 // change password
 app.post("/ChangePassword", (req, res, next) => {
   console.log(req.body.employeePassword);
@@ -96,7 +131,7 @@ app.post("/employe", (req, res, next) => {
   } else {
     employee.findOne({ employeeEmail: req.body.email }, (err, doc) => {
       if (!err && !doc) {
-        var employ = new employee({
+        let employ = new employee({
           employeeName: req.body.name,
           employeeEmail: req.body.email,
           employeePassword: req.body.password,
@@ -107,7 +142,11 @@ app.post("/employe", (req, res, next) => {
           if (!err) {
             res.send({ message: "Employee created", doc });
             // Send OTP with Email
-            emailSnd(doc);
+            // req.body.employeeNumber ? emailSnd(doc) : emailSnd(doc);
+            // emailSnd(doc);
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.email)
+              ? emailSnd(doc)
+              : smsSnd(doc);
           } else {
             res.status(500).send("Employee create error, " + err);
           }
@@ -240,8 +279,8 @@ app.get("/RiderEmploye", (req, res, next) => {
 app.post("/bulkTransfer", (req, res, next) => {
   console.log("In Bulk ransfer", req.body);
 
-  var filters = req.body.filter;
-  var transactiondata = req.body.transaction;
+  let filters = req.body.filter;
+  let transactiondata = req.body.transaction;
 
   payment.updateMany(
     { _id: { $in: filters } },

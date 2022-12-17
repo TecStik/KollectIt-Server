@@ -7,7 +7,7 @@ const morgan = require("morgan");
 const postmark = require("postmark");
 const app = express();
 let authRoutes = require("./auth");
-var nodemailer = require("nodemailer");
+let nodemailer = require("nodemailer");
 
 const { ServerSecretKey, PORT } = require("./core/index");
 const { payment, employee, otpModel, clientdata } = require("./dbase/modules");
@@ -145,7 +145,7 @@ app.post("/PaymentData", (req, res, next) => {
         req.end();
 
         // Send OTP with Email
-        var mailOptions = {
+        let mailOptions = {
           from: "appSupport@tecstik.com",
           to: data.PaymentEmail,
           subject: "Payment verify OTP",
