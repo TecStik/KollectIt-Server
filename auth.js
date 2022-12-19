@@ -25,7 +25,7 @@ function emailSnd(doc) {
   let mailOptions = {
     from: "appSupport@tecstik.com",
     to: doc.employeeEmail,
-    subject: "Your Account has been Careated successfully !",
+    subject: "Your account has been created successfully!",
     html: `<h1>Your ${doc.employeeName} account has been created on KollectIt as role ${doc.Role}</h1>`,
   };
 
