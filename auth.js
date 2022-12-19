@@ -26,7 +26,7 @@ function emailSnd(doc) {
     from: "appSupport@tecstik.com",
     to: doc.employeeEmail,
     subject: "Your Account has been Careated successfully !",
-    html: `<h1>${doc.employeeName} account has been created </h1>`,
+    html: `<h1>Your ${doc.employeeName} account has been created on KollectIt as role ${doc.Role}</h1>`,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
@@ -40,7 +40,7 @@ function emailSnd(doc) {
 
 function smsSnd(doc) {
   let receiver = doc.employeeEmail;
-  let textmessage = `Your account has been craeted: ${doc.employeeName}`;
+  let textmessage = `<h1>Your ${doc.employeeName} account has been created on KollectIt as role ${doc.Role}</h1>`;
   let options = {
     host: "api.veevotech.com",
     path:
@@ -153,6 +153,7 @@ app.post("/employe", (req, res, next) => {
         });
       } else {
         res.status(409).send({
+          // message: `Your ${doc.employeeName} account has been created on KollectIt as role ${doc.Role}`,
           message: "Employee  alredy exist",
         });
       }
