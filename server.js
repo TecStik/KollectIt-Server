@@ -127,7 +127,7 @@ app.post("/PaymentData", (req, res, next) => {
             req.end();
             // Send OTP with Email
             client.sendEmail({
-                "From": "info@tecstic.com",
+                "From": "faiz_student@sysborg.com",
                 "To": data.PaymentEmail,
                 "Subject": "Payment verification OTP",
                 "TextBody": `please note your payment verification OTP: ${otp}`
@@ -196,7 +196,7 @@ app.post("/ReSendOTP", (req, res) => {
             // console.log(data);
             if (!err) {
                 client.sendEmail({
-                    "From": "info@tecStik.com",
+                    "From": "faiz_student@sysborg.com",
                     "To": data.PaymentEmail,
                     "Subject": "Resend Payment verify OTP",
                     "TextBody": `Here is verify Otp code: ${data.VerificationCode.toString()}`
