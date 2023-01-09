@@ -141,6 +141,7 @@ app.post("/employe", (req, res, next) => {
         });
         employ.save((err, doc) => {
           if (!err) {
+            if(doc.Role=="admin"){
             let newQuota= new quota({
               Limit:15,
               Utilized:0,
@@ -149,8 +150,10 @@ app.post("/employe", (req, res, next) => {
             })
             newQuota.save((err, qta) => {
               console.log("Employee with quota",doc,qta);
+              res.send({ message: "Employee created",data:{ doc,qta} });
             }
             )
+          }
             res.send({ message: "Employee created", doc });
             // Send OTP with Email
             // req.body.employeeNumber ? emailSnd(doc) : emailSnd(doc);
