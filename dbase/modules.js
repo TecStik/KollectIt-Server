@@ -37,8 +37,8 @@ process.on('SIGINT', function () {/////this function will run jst before app is 
 let quotaSchema = new mongoose.Schema({
     BelongsTo: String,
 
-    Limit: String,
-    Utilized: String,
+    Limit: Number,
+    Utilized: Number,
    
     "createdOn": { "type": Date, "default": Date.now },
 });
