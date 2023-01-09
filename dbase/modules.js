@@ -50,7 +50,6 @@ let quotaModel = mongoose.model("quota", quotaSchema);
 // otpSchema Start
 let otpSchema = new mongoose.Schema({
     "PaymentEmail": String,
-
     "ClientId": String,
     "PaymentId": String,
     "otpCode": String,

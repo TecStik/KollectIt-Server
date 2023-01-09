@@ -28,6 +28,59 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+let docEamil;
+let docNumber;
+let messageEmail;
+
+function emailSnd(docEamil, messageEmail) {
+  let mailOptions = {
+    from: "appSupport@tecstik.com",
+    to: docEamil,
+    subject: messageEmail,
+    html: `<h1>Your ${messageEmail}</h1>`,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log("error=>", error);
+    } else {
+      console.log("Email sent: =>" + info.response);
+    }
+  });
+}
+
+function smsSnd(docNumber, messageEmail) {
+  let receiver = docNumber;
+  // let textmessage = `<h1>Your ${doc.employeeName} account has been created on KollectIt as role ${doc.Role}</h1>`;
+  let options = {
+    host: "api.veevotech.com",
+    path:
+      "/sendsms?hash=" +
+      APIKey +
+      "&receivenum=" +
+      receiver +
+      "&sendernum=" +
+      encodeURIComponent(sender) +
+      "&textmessage=" +
+      encodeURIComponent(messageEmail),
+    method: "GET",
+    setTimeout: 30000,
+  };
+  let req = http.request(options, (res) => {
+    res.setEncoding("utf8");
+    res.on("data", (chunk) => {
+      console.log(chunk.toString());
+    });
+    console.log("STATUS: " + res.statusCode);
+  });
+  req.on("error", function (e) {
+    console.log("problem with request: " + e.message);
+  });
+  console.log(options, "options");
+  console.log(receiver, "receiver");
+  req.end();
+}
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
@@ -571,12 +624,22 @@ app.post("/ReciveOtpStep-2", (req, res, next) => {
     console.log(otpData);
     if (otpData.VerificationCode === req.body.otp) {
       otpData.update({ status: req.body.status }, (err, data) => {
-        client.sendEmail({
-          From: "faiz_student@sysborg.com",
-          To: otpData.PaymentEmail,
-          Subject: "Thank for Payment is Recived",
-          TextBody: `payment is successfully recorded in our system.`,
-        });
+        console.log(data);
+
+        docEamil = otpData.PaymentEmail;
+        docNumber = otpData.PaymentNumber;
+        messageEmail = "payment is successfully recorded in our system.";
+
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(docEamil)
+          ? emailSnd(docEamil, messageEmail)
+          : smsSnd(docNumber, messageEmail);
+
+        // client.sendEmail({
+        //   From: "faiz_student@sysborg.com",
+        //   To: otpData.PaymentEmail,
+        //   Subject: "Thank for Payment is Recived",
+        //   TextBody: `payment is successfully recorded in our system.`,
+        // });
       });
       res.send(otpData);
     } else {
@@ -597,12 +660,20 @@ app.post("/ReSendOTP", (req, res) => {
     payment.findOne({ _id: req.body.PayObjectId }, (err, data) => {
       // console.log(data);
       if (!err) {
-        client.sendEmail({
-          From: "faiz_student@sysborg.com",
-          To: data.PaymentEmail,
-          Subject: "Resend Payment verify OTP",
-          TextBody: `Here is verify Otp code: ${data.VerificationCode.toString()}`,
-        });
+        // client.sendEmail({
+        //   From: "faiz_student@sysborg.com",
+        //   To: data.PaymentEmail,
+        //   Subject: "Resend Payment verify OTP",
+        //   TextBody: `Here is verify Otp code: ${data.VerificationCode.toString()}`,
+        // });
+
+        let messageEmail = `<h1>Here is verify Otp code: ${data.VerificationCode.toString()}</h1>`;
+        docNumber=data.PaymentNumber
+        docEamil=data.PaymentEmail;
+
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.PaymentEmail)
+          ? emailSnd(docEamil, messageEmail)
+          : smsSnd(docNumber, messageEmail);
         res.send("Please Check the email");
       } else {
         res.send(err);
@@ -618,12 +689,20 @@ app.post("/conformationPayment", (req, res, next) => {
   } else {
     clientdata.findById({ _id: req.body.ClientObjectId }, (err, data) => {
       if (!err) {
-        client.sendEmail({
-          From: "faiz_student@sysborg.com",
-          To: data.ClientEmail,
-          Subject: "Thank for Payment has been Recive",
-          TextBody: `payment is successfully recorded in our system.`,
-        });
+        // client.sendEmail({
+        //   From: "faiz_student@sysborg.com",
+        //   To: data.ClientEmail,
+        //   Subject: "Thank for Payment has been Recive",
+        //   TextBody: `payment is successfully recorded in our system.`,
+        // });
+
+        let messageEmail = `<h1>Thank for Payment has been Recive & payment is successfully recorded in our system.</h1>`;
+        docNumber=data.ClientPhoneNumber
+        docEamil=data.ClientEmail;
+
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.ClientEmail)
+          ? emailSnd(docEamil, messageEmail)
+          : smsSnd(docNumber, messageEmail);
         res.send(data);
       } else {
         res.send(err);

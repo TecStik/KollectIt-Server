@@ -71,6 +71,7 @@ function smsSnd(doc) {
   req.end();
 }
 // change password
+
 app.post("/ChangePassword", (req, res, next) => {
   console.log(req.body.employeePassword);
   if (!req.body.empolyeeObjectId) {
