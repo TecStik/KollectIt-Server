@@ -4,6 +4,7 @@ const {
   payment,
   Transaction,
   clientdata,
+  quota
 } = require("./dbase/modules");
 let nodemailer = require("nodemailer");
 let app = express.Router();
@@ -140,6 +141,16 @@ app.post("/employe", (req, res, next) => {
         });
         employ.save((err, doc) => {
           if (!err) {
+            let newQuota= new quota({
+              Limit:15,
+              Utilized:0,
+              BelongsTo:doc._id
+
+            })
+            newQuota.save((err, qta) => {
+              console.log("Employee with quota",doc,qta);
+            }
+            )
             res.send({ message: "Employee created", doc });
             // Send OTP with Email
             // req.body.employeeNumber ? emailSnd(doc) : emailSnd(doc);
@@ -148,7 +159,7 @@ app.post("/employe", (req, res, next) => {
               ? emailSnd(doc)
               : smsSnd(doc);
           } else {
-            res.status(500).send("Employee create error, " + err);
+            res.status(500).send("Error in creating Employee, " + err);
           }
         });
       } else {

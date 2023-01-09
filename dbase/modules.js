@@ -33,7 +33,18 @@ process.on('SIGINT', function () {/////this function will run jst before app is 
 ////////////////mongodb connected disconnected events///////////////////////////////////////////////
 
 
+// QuotaSchema Start
+let quotaSchema = new mongoose.Schema({
+    BelongsTo: String,
 
+    Limit: String,
+    Utilized: String,
+   
+    "createdOn": { "type": Date, "default": Date.now },
+});
+let quotaModel = mongoose.model("quota", quotaSchema);
+
+// QuotaSchema  End
 
 
 // otpSchema Start
@@ -126,5 +137,6 @@ module.exports = {
     payment: payment,
     clientdata: clientdata,
     employee: employee,
+    quota:quotaModel,
     Transaction: Transaction
 }
