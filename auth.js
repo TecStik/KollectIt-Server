@@ -106,7 +106,7 @@ app.post("/login", (req, res, next) => {
       `please send email and passwod in json body.
             e.g:
              {
-            "email": "myMailk@gmail.com",
+            "email": "myMail@gmail.com",
             "password": "abc",
          }`
     );
@@ -142,7 +142,7 @@ app.post("/employe", (req, res, next) => {
         });
         employ.save((err, doc) => {
           if (!err) {
-            if(doc.Role=="admin"){
+            if(doc.Role.toLowerCase()=="admin"){
             let newQuota= new quota({
               Limit:15,
               Utilized:0,
