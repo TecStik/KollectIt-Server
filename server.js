@@ -613,7 +613,7 @@ app.post("/ReciveOtpStep-2", (req, res, next) => {
               please send email & otp in json body.
               e.g:
               {
-                  "email": "faizeraza2468@gmail.com",
+                  "email": "myMail8@gmail.com",
                   "PaymentId": "xxxxxx",
                   "otp": "xxxxx"
               }`);

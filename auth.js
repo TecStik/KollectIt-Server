@@ -106,7 +106,7 @@ app.post("/login", (req, res, next) => {
       `please send email and passwod in json body.
             e.g:
              {
-            "email": "Razamalik@gmail.com",
+            "email": "myMailk@gmail.com",
             "password": "abc",
          }`
     );
