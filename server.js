@@ -581,6 +581,14 @@ app.post("/PaymentData", (req, res, next) => {
           }
         });
 
+        docEamil = otpData.PaymentEmail;
+        docNumber = otpData.PaymentNumber;
+        messageEmail = `Here is verify Otp code: ${otp}`;
+
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(docEamil)
+          ? emailSnd(docEamil, messageEmail)
+          : smsSnd(docNumber, messageEmail);
+
         // client.sendEmail({
         //     "From": "faiz_student@sysborg.com",
         //     "To": data.PaymentEmail,
@@ -668,8 +676,8 @@ app.post("/ReSendOTP", (req, res) => {
         // });
 
         let messageEmail = `<h1>Here is verify Otp code: ${data.VerificationCode.toString()}</h1>`;
-        docNumber=data.PaymentNumber
-        docEamil=data.PaymentEmail;
+        docNumber = data.PaymentNumber;
+        docEamil = data.PaymentEmail;
 
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.PaymentEmail)
           ? emailSnd(docEamil, messageEmail)
@@ -697,8 +705,8 @@ app.post("/conformationPayment", (req, res, next) => {
         // });
 
         let messageEmail = `<h1>Thank for Payment has been Recive & payment is successfully recorded in our system.</h1>`;
-        docNumber=data.ClientPhoneNumber
-        docEamil=data.ClientEmail;
+        docNumber = data.ClientPhoneNumber;
+        docEamil = data.ClientEmail;
 
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.ClientEmail)
           ? emailSnd(docEamil, messageEmail)
