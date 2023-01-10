@@ -10,7 +10,7 @@ let authRoutes = require("./auth");
 let nodemailer = require("nodemailer");
 
 const { ServerSecretKey, PORT } = require("./core/index");
-const { payment, employee, otpModel, clientdata } = require("./dbase/modules");
+const { payment, employee, otpModel, clientdata,quota } = require("./dbase/modules");
 const serviceAccount = require("./firebase/firebase.json");
 const client = new postmark.Client("fa2f6eae-eaa6-4389-98f0-002e6fc5b900");
 // const client = new postmark.Client("404030c2-1084-4400-bfdb-af97c2d862b3");
@@ -33,6 +33,7 @@ let docNumber;
 let messageEmail;
 
 function emailSnd(docEamil, messageEmail) {
+  console.log("sending email",)
   let mailOptions = {
     from: "appSupport@tecstik.com",
     to: docEamil,
@@ -42,7 +43,7 @@ function emailSnd(docEamil, messageEmail) {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log("error=>", error);
+      console.log("Email error=>", error);
     } else {
       console.log("Email sent: =>" + info.response);
     }
@@ -159,6 +160,7 @@ app.post("/PaymentData", (req, res, next) => {
       imageUrl: req.body.imageUrl,
       heldby: req.body.heldby,
       drawOn: req.body.drawOn,
+      BelongsTo: req.body.belongsTo,
       dueOn: req.body.dueOn,
       AssignedBy: req.body.AssignedBy,
       VerificationCode: otp,
@@ -575,14 +577,14 @@ app.post("/PaymentData", (req, res, next) => {
 
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
-            console.log("error=>", error);
+            console.log("error=>", error)
           } else {
             console.log("Email sent: =>" + info.response);
           }
         });
 
-        docEamil = otpData.PaymentEmail;
-        docNumber = otpData.PaymentNumber;
+        docEamil = data.PaymentEmail;
+        docNumber = data.PaymentNumber;
         messageEmail = `Here is verify Otp code: ${otp}`;
 
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(docEamil)
@@ -604,7 +606,22 @@ app.post("/PaymentData", (req, res, next) => {
       });
   }
 });
+//---increment the tx
+function incrementTx(belongsTo){
+  quota.t.findOne({ BelongsTo: belongsTo}, (err, qta) => {
+    
+    console.log("Quota",qta);
+    if (qta) {
+      let outstanding= parseInt(qta.Utilized);
+      let newOs= outstanding+1;
+    }else{
 
+    }
+
+      qta.update({ Utilized:newOs }, (err, data) => {
+        console.log("Quota after update",data);
+
+}
 // Otp Send Api
 
 //  Rendom 5 number Otp
@@ -640,7 +657,7 @@ app.post("/ReciveOtpStep-2", (req, res, next) => {
 
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(docEamil)
           ? emailSnd(docEamil, messageEmail)
-          : smsSnd(docNumber, messageEmail);
+          : smsSnd(docNumber, messageEmail)
 
         // client.sendEmail({
         //   From: "faiz_student@sysborg.com",
